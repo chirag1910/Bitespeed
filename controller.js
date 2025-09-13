@@ -70,6 +70,10 @@ const identify = async (req, res) => {
             );
         }
 
+        // Ensure the provided email and phone number are included in the response too
+        emails.push(email);
+        phoneNumbers.push(phoneNumber);
+
         // Return the consolidated response
         return res
             .status(200)
