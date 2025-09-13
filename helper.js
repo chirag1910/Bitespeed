@@ -73,11 +73,7 @@ const collectUniqueParentIds = (contacts) => {
     const uniqueParentIds = new Set();
 
     contacts.forEach((contact) => {
-        if (contact.linkPrecedence === "primary") {
-            uniqueParentIds.add(contact.id);
-        } else {
-            uniqueParentIds.add(contact.linkedId);
-        }
+        uniqueParentIds.add(getRootNodeForSingleContact(contact));
     });
 
     return uniqueParentIds;
