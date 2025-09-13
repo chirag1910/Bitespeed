@@ -62,17 +62,22 @@ const identify = async (req, res) => {
 
         if (isEmailNew || isPhoneNew) {
             // Add a new secondary contact linked to the primary
-            await helper.addNewContact(
+            const newSecondaryContact = await helper.addNewContact(
                 email,
                 phoneNumber,
                 finalRootNodeId,
                 "secondary"
             );
-        }
 
-        // Ensure the provided email and phone number are included in the response too
-        emails.push(email);
-        phoneNumbers.push(phoneNumber);
+            // Update our lists with the new contact info
+            if (newSecondaryContact.email)
+                emails.push(newSecondaryContact.email);
+
+            if (newSecondaryContact.phoneNumber)
+                phoneNumbers.push(newSecondaryContact.phoneNumber);
+
+            secondaryContactIds.push(newSecondaryContact.id);
+        }
 
         // Return the consolidated response
         return res
