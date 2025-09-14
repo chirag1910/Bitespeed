@@ -9,7 +9,10 @@ const { Op } = require("sequelize");
  * @returns {Promise<Object>} Response with identified contact information
  */
 const identify = async (req, res) => {
-    const { email, phoneNumber } = req.body;
+    let { email, phoneNumber } = req.body;
+
+    email = email ? email.trim() : null;
+    phoneNumber = phoneNumber ? phoneNumber.trim() : null;
 
     try {
         // Find all contacts matching either email or phone
