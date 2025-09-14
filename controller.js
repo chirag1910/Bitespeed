@@ -49,7 +49,23 @@ const identify = async (req, res) => {
         const phoneNumbers = [];
         const secondaryContactIds = [];
 
+        // First, find the primary contact to ensure its email/phone appear first
+        const primaryContact = allContacts.find(
+            (contact) => contact.id === finalRootNodeId
+        );
+
+        // Add primary contact info first
+        if (primaryContact) {
+            if (primaryContact.email) emails.push(primaryContact.email);
+            if (primaryContact.phoneNumber)
+                phoneNumbers.push(primaryContact.phoneNumber);
+        }
+
+        // Then add all other contacts
         allContacts.forEach((contact) => {
+            // Skip the primary contact as we've already added it
+            if (contact.id === finalRootNodeId) return;
+
             if (contact.email) emails.push(contact.email);
             if (contact.phoneNumber) phoneNumbers.push(contact.phoneNumber);
             if (contact.linkPrecedence === "secondary")
@@ -85,8 +101,8 @@ const identify = async (req, res) => {
             .json(
                 helper.buildResponse(
                     finalRootNodeId,
-                    [...new Set(emails)],
-                    [...new Set(phoneNumbers)],
+                    emails,
+                    phoneNumbers,
                     secondaryContactIds
                 )
             );

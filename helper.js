@@ -2,10 +2,31 @@ const Contact = require("./model");
 const { Op } = require("sequelize");
 
 /**
+ * Removes duplicates from an array while preserving order
+ * @param {Array} array - The array to deduplicate
+ * @returns {Array} A new array with duplicates removed while preserving order
+ */
+const removeDuplicatesPreserveOrder = (array) => {
+    if (!array) return [];
+
+    const seen = new Set();
+    const result = [];
+
+    for (const item of array) {
+        if (!seen.has(item)) {
+            seen.add(item);
+            result.push(item);
+        }
+    }
+
+    return result;
+};
+
+/**
  * Builds a standardized response object for the identify endpoint
  * @param {Number} primaryContactId - The ID of the primary contact
- * @param {Array} emails - List of unique emails associated with the contact
- * @param {Array} phoneNumbers - List of unique phone numbers associated with the contact
+ * @param {Array} emails - List of emails associated with the contact
+ * @param {Array} phoneNumbers - List of phone numbers associated with the contact
  * @param {Array} secondaryContactIds - List of secondary contact IDs
  * @returns {Object} Formatted response object
  */
@@ -17,9 +38,9 @@ const buildResponse = (
 ) => {
     return {
         contact: {
-            primaryContactId, // Fixed the typo in parameter name
-            emails: emails || [],
-            phoneNumbers: phoneNumbers || [],
+            primaryContactId,
+            emails: removeDuplicatesPreserveOrder(emails),
+            phoneNumbers: removeDuplicatesPreserveOrder(phoneNumbers),
             secondaryContactIds: secondaryContactIds || [],
         },
     };
